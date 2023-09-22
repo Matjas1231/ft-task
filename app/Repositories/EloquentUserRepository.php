@@ -27,6 +27,13 @@ class EloquentUserRepository implements UserRepositoryInterface
         $user->role = 'user';
 
         $user->save();
+
+        return $user;
     }
 
+    public function update(array $dataToUpdate)
+    {
+        $user = $this->getUserByEmail($dataToUpdate['email']);
+        $user->update($dataToUpdate);
+    }
 }
