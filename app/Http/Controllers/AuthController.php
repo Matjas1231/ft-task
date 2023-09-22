@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserRegistered;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Repositories\UserRepositoryInterface;
@@ -12,10 +13,7 @@ class AuthController extends Controller
 {
     public function __construct(
         private UserRepositoryInterface $userRepository
-    )
-    {
-        $this->userRepository = $userRepository;
-    }
+    ) {}
 
     public function login()
     {
@@ -61,8 +59,12 @@ class AuthController extends Controller
         $validatedData = $request->validated();
 
         $validatedData['password'] = Hash::make($validatedData['password']);
-        $this->userRepository->create($validatedData);
+        $user = $this->userRepository->create($validatedData);
 
-        return redirect()->route('home');
+        event(new UserRegistered($user));
+
+        return redirect()
+            ->route('login')
+            ->with(['success' => 'Registration successfully']);
     }
 }
