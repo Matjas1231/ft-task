@@ -18,6 +18,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
 
+Route::group([
+    'middleware' => 'can:editor-level'
+], function () {
+    // ROUTES FOR POSTS MANAGEMENT
+    Route::get('/panel', [PanelController::class, 'index'])->name('panel.index');
+    Route::get('/panel/posts/create', [PostController::class, 'create'])->name('panel.post.create');
+    Route::post('/panel/posts/create', [PostController::class, 'store'])->name('panel.post.store');
+
+    Route::get('/panel/posts/{postId}', [PostController::class, 'show'])->name('panel.post.show');
+    Route::get('/panel/posts/{postId}/edit', [PostController::class, 'edit'])->name('panel.post.edit');
+    Route::post('/panel/posts/edit', [PostController::class, 'update'])->name('panel.post.update');
+
+    Route::get('/panel/posts/{postId}/delete', [PostController::class, 'delete'])->name('panel.post.delete');
+});
+
 // ROUTES FOR AUTH
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'logging'])->name('logging');
