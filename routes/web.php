@@ -31,6 +31,22 @@ Route::group([
     Route::post('/panel/posts/edit', [PostController::class, 'update'])->name('panel.post.update');
 
     Route::get('/panel/posts/{postId}/delete', [PostController::class, 'delete'])->name('panel.post.delete');
+
+    // ROUTES FOR USERS MANAGEMENT
+    Route::group([
+        'middleware' => 'can:admin-level'
+    ], function () {
+        Route::get('/panel/users', [PanelController::class, 'usersList'])->name('panel.user.list');
+
+        Route::get('/panel/users/create', [UserController::class, 'create'])->name('panel.user.create');
+        Route::post('/panel/users/create', [UserController::class, 'store'])->name('panel.user.store');
+
+
+        Route::get('/panel/users/{userId}/edit', [UserController::class, 'edit'])->name('panel.user.edit');
+        Route::post('/panel/users/edit', [UserController::class, 'update'])->name('panel.user.update');
+
+        Route::get('panel/users/{userId}/delete', [UserController::class, 'delete'])->name('panel.user.delete');
+    });
 });
 
 // ROUTES FOR AUTH
